@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat con Fotos y Texto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center h-screen bg-gradient-to-r from-[#7fbdfb] to-[#4B8C85]">
+    <div class="w-full max-w-lg p-6 bg-white shadow-2xl rounded-2xl">
+        <h2 class="text-3xl font-bold text-center text-gray-700">💬 Chat con Imágenes</h2>
+        <div id="chat-box" class="h-80 overflow-y-auto p-4 border border-gray-300 rounded-lg bg-gray-50 mt-4 space-y-4 shadow-inner">
+            <!-- Mensajes se agregarán aquí dinámicamente -->
+        </div>
+        <form id="chat-form" class="mt-4 flex flex-col space-y-3">
+            <input type="text" id="message-input" placeholder="Escribe un mensaje..." class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <label class="flex items-center justify-center w-full p-3 border-2 border-dashed border-gray-400 rounded-lg cursor-pointer hover:bg-gray-100">
+                📷 Subir Imagen (Opcional)
+                <input type="file" id="image-input" accept="image/*" class="hidden">
+            </label>
+            <button type="submit" class="w-full px-4 py-2 font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none transition duration-300">Enviar</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("chat-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const messageInput = document.getElementById("message-input");
+            const imageInput = document.getElementById("image-input");
+            const chatBox = document.getElementById("chat-box");
+
+            const message = document.createElement("div");
+            message.className = "flex items-center space-x-2 p-2 bg-white rounded-lg shadow-md";
+
+            if (messageInput.value.trim() !== "") {
+                const text = document.createElement("span");
+                text.className = "text-gray-700 text-sm";
+                text.innerText = messageInput.value;
+                message.appendChild(text);
+                messageInput.value = "";
+            }
+            
+            if (imageInput.files.length > 0) {
+                const file = imageInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.className = "w-20 h-20 object-cover rounded-lg border border-gray-300";
+                    message.appendChild(img);
+                    chatBox.appendChild(message);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                    imageInput.value = "";
+                };
+                reader.readAsDataURL(file);
+            } else {
+                chatBox.appendChild(message);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>

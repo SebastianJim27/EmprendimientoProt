@@ -1,4 +1,4 @@
 from django.shortcuts import render
 
 def index(request):
-    return render(request, 'foro/index.html')
+    return render(request, 'chatforo/chat.html')
