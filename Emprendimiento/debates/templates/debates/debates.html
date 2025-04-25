@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Debates</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-[#7fbdfb] to-[#4B8C85] min-h-screen p-6 flex flex-col items-center">
+
+  <div class="w-full max-w-3xl bg-white shadow-2xl rounded-2xl p-6">
+    <!-- Encabezado -->
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-gray-700">🗣️ Debates</h1>
+      <a href="/usuario" class="flex items-center space-x-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5.121 17.804A4 4 0 017 17h10a4 4 0 011.879.804M15 11a3 3 0 10-6 0 3 3 0 006 0z" />
+        </svg>
+        <span>Usuario</span>
+      </a>
+    </div>
+
+    <!-- Formulario para nuevo debate -->
+    <form id="debate-form" class="mb-6 space-y-3">
+      <input type="text" id="debate-title" placeholder="Título del debate" required class="w-full p-2 border rounded-lg focus:ring-indigo-500">
+      <textarea id="debate-desc" placeholder="Descripción del debate" required class="w-full p-2 border rounded-lg focus:ring-indigo-500"></textarea>
+      <button type="submit" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Agregar Debate</button>
+    </form>
+
+    <!-- Lista de debates -->
+    <div id="debates-list" class="space-y-6">
+      <!-- Los debates se insertarán aquí dinámicamente -->
+    </div>
+  </div>
+
+  <script>
+    const debates = [];
+
+    function renderDebates() {
+      const list = document.getElementById("debates-list");
+      list.innerHTML = "";
+
+      debates.forEach((debate, index) => {
+        const debateCard = document.createElement("div");
+        debateCard.className = "p-4 bg-gray-50 border border-gray-300 rounded-xl shadow";
+
+        debateCard.innerHTML = `
+          <div class="flex justify-between items-center">
+            <h3 class="text-xl font-semibold text-gray-800">${debate.title}</h3>
+            <div class="flex items-center space-x-2">
+              <button onclick="vote(${index}, 1)" class="text-green-600 hover:scale-110 transition">👍</button>
+              <span class="font-bold text-gray-700">${debate.votes}</span>
+              <button onclick="vote(${index}, -1)" class="text-red-600 hover:scale-110 transition">👎</button>
+            </div>
+          </div>
+          <p class="text-gray-700 mt-2">${debate.desc}</p>
+          <div class="mt-4">
+            <input type="text" placeholder="Escribe un comentario..." onkeydown="if(event.key === 'Enter') addComment(event, ${index})" class="w-full p-2 border rounded-lg text-sm">
+            <div class="mt-2 space-y-1 text-sm text-gray-800">
+              ${debate.comments.map(c => `<div class="bg-white p-2 rounded shadow-inner">${c}</div>`).join("")}
+            </div>
+          </div>
+        `;
+
+        list.appendChild(debateCard);
+      });
+    }
+
+    function vote(index, amount) {
+      debates[index].votes += amount;
+      renderDebates();
+    }
+
+    function addComment(e, index) {
+      const input = e.target;
+      if (input.value.trim() !== "") {
+        debates[index].comments.push(input.value.trim());
+        input.value = "";
+        renderDebates();
+      }
+    }
+
+    document.getElementById("debate-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const title = document.getElementById("debate-title").value.trim();
+      const desc = document.getElementById("debate-desc").value.trim();
+
+      if (title && desc) {
+        debates.push({ title, desc, votes: 0, comments: [] });
+        document.getElementById("debate-form").reset();
+        renderDebates();
+      }
+    });
+
+    renderDebates(); // Inicial
+  </script>
+</body>
+</html>

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'registro',
     'chatforo',
     'infousuario',
+    'debates',
 ]
 
 MIDDLEWARE = [
